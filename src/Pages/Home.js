@@ -1,9 +1,11 @@
 import Header from "../Components/Header"
 import TaskList from "../Components/TaskList"
+import ShowSettingsPanel from "../Components/ShowSettingsPanel"
 import { useRef, useState } from "react"
 import { v4 } from "uuid"
 
 const Home = () => {
+    console.log("home")
 
     const inputEl = useRef()
     const [taskList, setTaskList] = useState([])
@@ -17,35 +19,34 @@ const Home = () => {
         inputEl.current.value = ""
     }
 
+    function toggleTaskStatus(taskId) {
+        console.log("toggleTaskStatus")
+        const i = taskList.findIndex(task => task.id === taskId)
+        console.log(i)
+        setTaskList(taskList.map((task, index) => {
+            if (index === i) {
+                task.isFinished = !task.isFinished
+            }
+            return task
+        }))
+        console.log(taskList)
+    }
+
+    function clearFinished() {
+        setTaskList(taskList.filter( item => item.isFinished === false)  )
+    }
+
+    console.log("home-----")
     return (
         <div>
             <Header />
             <form onSubmit={handleSubmit}>
                 <input ref={inputEl} type="text" placeholder="Create a new TODO" />
             </form>
-            <TaskList taskList={taskList} />
-            <ShowSettings />
+            <TaskList taskList={taskList} toggleTaskStatus={toggleTaskStatus} />
+            <ShowSettingsPanel taskList={taskList} clearFinished={clearFinished}/>
         </div>
     )
-}
-
-const ShowSettings = () => {
-
-    function toggleActive (e) {
-        const options = document.querySelectorAll('.visibility-option')
-        options.forEach((option) => option.classList.remove('active'))
-        const buttonClicked = e.target
-        buttonClicked.classList.add('active')
-    }
-
-    return (
-        <>
-            <button className="visibility-option active" onClick={toggleActive}>All</button>
-            <button className="visibility-option" onClick={toggleActive}>Active</button>
-            <button className="visibility-option" onClick={toggleActive}>Finished</button>
-        </>
-    )
-
 }
 
 export default Home
