@@ -2,13 +2,14 @@ import Header from "../Components/Header"
 import TaskList from "../Components/TaskList"
 import TaskFilter from "../Components/TaskFilter"
 import ShowSettingsPanel from "../Components/ShowSettingsPanel"
-import { useRef, useState } from "react"
+import { useRef, useState, useEffect } from "react"
 import { v4 } from "uuid"
 import useWindowSize from "../hooks/useWindowSize"
 
 const Home = () => {
 
     const screenWidth = useWindowSize().width
+    const localStorage = window.localStorage
 
     const startingTasks = [
         { id: v4(), title: "Complete online JavaScript course", isFinished: true },
@@ -20,7 +21,11 @@ const Home = () => {
     ]
 
     const inputEl = useRef()
-    const [taskList, setTaskList] = useState(startingTasks)
+    const [taskList, setTaskList] = useState(JSON.parse(localStorage.getItem('tasks')) ?? startingTasks)
+
+    useEffect(() => {
+        localStorage.setItem('tasks', JSON.stringify(taskList))
+    })
 
     function handleSubmit(e) {
         e.preventDefault()
@@ -48,6 +53,9 @@ const Home = () => {
             }
             return task
         }))
+    }
+
+    function updateLocalStorage() {
     }
 
     function clearFinished() {
@@ -91,7 +99,7 @@ const Home = () => {
                 <TaskList handleOnDragEnd={handleOnDragEnd} taskList={taskList} toggleTaskStatus={toggleTaskStatus} deleteTask={deleteTask} />
                 <ShowSettingsPanel screenWidth={screenWidth} taskList={taskList} clearFinished={clearFinished} />
             </div>
-            {screenWidth < 480 && <TaskFilter/>}
+            {screenWidth < 480 && <TaskFilter />}
         </div>
     )
 }
