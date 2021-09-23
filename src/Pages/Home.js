@@ -1,14 +1,26 @@
 import Header from "../Components/Header"
 import TaskList from "../Components/TaskList"
+import TaskFilter from "../Components/TaskFilter"
 import ShowSettingsPanel from "../Components/ShowSettingsPanel"
 import { useRef, useState } from "react"
 import { v4 } from "uuid"
+import useWindowSize from "../hooks/useWindowSize"
 
 const Home = () => {
-    console.log("home")
+
+    const screenWidth = useWindowSize().width
+
+    const startingTasks = [
+        { id: v4(), title: "Complete online JavaScript course", isFinished: true },
+        { id: v4(), title: "Jog around the park 3x", isFinished: false },
+        { id: v4(), title: "10 minutes meditation", isFinished: false },
+        { id: v4(), title: "Read for 1 hour", isFinished: false },
+        { id: v4(), title: "Pick up groceries", isFinished: false },
+        { id: v4(), title: "Complete Todo App on Frontend Mentor", isFinished: false }
+    ]
 
     const inputEl = useRef()
-    const [taskList, setTaskList] = useState([])
+    const [taskList, setTaskList] = useState(startingTasks)
 
     function handleSubmit(e) {
         e.preventDefault()
@@ -17,6 +29,13 @@ const Home = () => {
         const newTask = { id, title: inputVal, isFinished: false }
         setTaskList((prevTasks) => [...prevTasks, newTask])
         inputEl.current.value = ""
+    }
+
+    function deleteTask(taskId) {
+        const i = taskList.findIndex(task => task.id === taskId)
+        const newTasklist = Array.from(taskList)
+        newTasklist.splice(i, 1)
+        setTaskList(newTasklist)
     }
 
     function toggleTaskStatus(taskId) {
@@ -29,22 +48,50 @@ const Home = () => {
             }
             return task
         }))
-        console.log(taskList)
     }
 
     function clearFinished() {
-        setTaskList(taskList.filter( item => item.isFinished === false)  )
+        setTaskList(taskList.filter(item => item.isFinished === false))
     }
 
-    console.log("home-----")
+    function handleOnDragEnd(e) {
+        console.log(e)
+        if (e.destination === null) {
+            return
+        }
+        const tasks = [...taskList]
+        const [reorderedTask] = tasks.splice(e.source.index, 1)
+        tasks.splice(e.destination.index, 0, reorderedTask)
+        setTaskList(tasks)
+    }
+
+    function handleFocus() {
+        document.querySelector('.decor-checkmark').classList.add('focused-input')
+    }
+
+    function handleBlur() {
+        document.querySelector('.decor-checkmark').classList.remove('focused-input')
+    }
+
+    function forceFocus() {
+        document.querySelector('input').focus()
+    }
+
+
     return (
-        <div>
+        <div className="app-wrapper">
             <Header />
             <form onSubmit={handleSubmit}>
-                <input ref={inputEl} type="text" placeholder="Create a new TODO" />
+                <div className="input-wrap" onClick={forceFocus}>
+                    <span className="decor-checkmark" />
+                    <input ref={inputEl} type="text" placeholder="Create a new todo" onFocus={handleFocus} onBlur={handleBlur} />
+                </div>
             </form>
-            <TaskList taskList={taskList} toggleTaskStatus={toggleTaskStatus} />
-            <ShowSettingsPanel taskList={taskList} clearFinished={clearFinished}/>
+            <div className="tasklist-wrap">
+                <TaskList handleOnDragEnd={handleOnDragEnd} taskList={taskList} toggleTaskStatus={toggleTaskStatus} deleteTask={deleteTask} />
+                <ShowSettingsPanel screenWidth={screenWidth} taskList={taskList} clearFinished={clearFinished} />
+            </div>
+            {screenWidth < 480 && <TaskFilter/>}
         </div>
     )
 }

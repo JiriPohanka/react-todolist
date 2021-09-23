@@ -1,14 +1,13 @@
 const Header = () => {
 
-    function toggleNightMode () {
-        //toggle classes that switch into dark mode
-        document.querySelector('body').classList.toggle('dark-mode')
+    function toggleNightMode() {
+       document.querySelector(':root').classList.toggle('dark-mode')
     }
 
     return (
         <header>
-          <h1>TODO</h1>
-          <button id="night-mode" onClick={toggleNightMode} >NightMode</button>
+            <h1>TODO</h1>
+            <button id="night-mode" onClick={toggleNightMode}><span className="night-mode-btn"></span></button>
         </header>
     )
 }

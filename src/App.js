@@ -1,4 +1,3 @@
-import './App.css';
 import Attribution from './Components/Attribution';
 import {
   BrowserRouter as Browser,
@@ -6,20 +5,21 @@ import {
   Route
 } from 'react-router-dom';
 import Home from './Pages/Home';
-import About from './Pages/About';
 
 function App() {
 
   return (
-    <Browser>
-      <Switch>
-        <Route path="/" component={Home} exact/>
-        <Route path="/about" component={About} />
-      </Switch>
+    <>
+      <div className="bgr-strip" />
+      <Browser>
+        <Switch>
+          <Route path="/" component={Home} exact />
+        </Switch>
+        <div className="drag-drop">drag and drop to reorder list</div>
+        <Attribution />
 
-      <Attribution />
-
-    </Browser>
+      </Browser>
+    </>
   );
 }
 
