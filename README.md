@@ -41,8 +41,8 @@ Users should be able to:
 
 ### Links
 
-- Solution URL: [Add solution URL here](https://your-solution-url.com)
-- Live Site URL: [Add live site URL here](https://your-live-site-url.com)
+- Solution URL: (https://github.com/JiriPohanka/react-todolist)
+- Live Site URL: (https://614c49adcd0a68a8d63be012--ecstatic-wing-ce01dc.netlify.app/)
 
 ## My process
 
